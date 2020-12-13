@@ -62,23 +62,51 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+% forward propagation intermediate values
+% Add ones to the X data matrix
+alpha1 = [ones(m, 1) X];
+z2 = alpha1 * Theta1';
+%size(z2)
+alpha2 = sigmoid(z2);
+alpha2 = [ones(size(alpha2, 1), 1), alpha2];
+z3 = alpha2 * Theta2';
+%size(z3)
+alpha3 = sigmoid(z3);
 
 
+y_matrix = eye(num_labels)(y,:);
+
+h = alpha3;
+
+J = (1 / m) * sum(sum(-y_matrix .* log(h) - (1 - y_matrix) .* log(1 - h), 2));
+
+J += (lambda / (2 * m)) * (sum(sum(power(Theta1(:,2:end), 2), 2)) + sum(sum(power(Theta2(:,2:end), 2), 2)));
 
 
+%grad = (1 / m) * X' * (h - y)
 
+%backpropagation
+d2 = zeros(m, hidden_layer_size);
+d3 = zeros(m, num_labels);
 
+Delta1 = zeros(hidden_layer_size, (input_layer_size + 1));
+Delta2 = zeros(num_labels, (hidden_layer_size + 1));
 
+values = zeros(1, num_labels);
+for val = 1:num_labels
+  values(1,val) = val;
+endfor
 
+for t = 1:m
+  d3(t, :) = alpha3(t, :) - (values == y(t));
+  d2(t, :) = d3(t, :) * Theta2(:,2:end) .* sigmoidGradient(z2(t, :));
+  
+  Delta1 += d2' * alpha1;
+  Delta2 += d3' * alpha2;
+endfor
 
-
-
-
-
-
-
-
-
+Theta1_grad = Delta1 ./ m;
+Theta2_grad = Delta2 ./ m;
 
 % -------------------------------------------------------------
 
