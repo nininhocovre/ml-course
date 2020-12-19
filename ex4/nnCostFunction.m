@@ -100,10 +100,10 @@ endfor
 for t = 1:m
   d3(t, :) = alpha3(t, :) - (values == y(t));
   d2(t, :) = d3(t, :) * Theta2(:,2:end) .* sigmoidGradient(z2(t, :));
-  
-  Delta1 += d2' * alpha1;
-  Delta2 += d3' * alpha2;
 endfor
+
+Delta1 = d2' * alpha1;
+Delta2 = d3' * alpha2;
 
 Theta1_grad = Delta1 ./ m;
 Theta2_grad = Delta2 ./ m;
