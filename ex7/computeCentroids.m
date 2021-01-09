@@ -26,11 +26,12 @@ centroids = zeros(K, n);
 % Note: You can use a for-loop over the centroids to compute this.
 %
 
-
-
-
-
-
+for it = 1:K
+  selection = find(idx == it);
+  if length(selection) > 1
+    centroids(it,:) = mean(X(selection,:),1);
+  endif
+endfor
 
 
 % =============================================================
